@@ -1,1 +1,513 @@
-# Commission
+<!DOCTYPE html>
+
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Felix_kid — Gallery</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0808;
+    --surface:  #120d0d;
+    --surface2: #1a1010;
+    --border:   #2e1a1a;
+    --red:      #c0202e;
+    --red2:     #e03040;
+    --red-glow: rgba(192,32,46,0.18);
+    --text:     #f5eaea;
+    --muted:    #8a6a6a;
+    --radius:   10px;
+    --trans:    0.32s cubic-bezier(0.4,0,0.2,1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:var(--bg); color:var(--text);
+    font-family:'DM Sans',sans-serif;
+    min-height:100vh; overflow-x:hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none; z-index:9999; opacity:0.45;
+  }
+
+/* HEADER */
+header {
+position:sticky; top:0; z-index:200;
+background:rgba(10,8,8,0.9);
+backdrop-filter:blur(20px);
+border-bottom:1px solid var(–border);
+padding:0 2rem; height:60px;
+display:flex; align-items:center; justify-content:space-between;
+}
+.logo {
+font-family:‘Cormorant Garamond’,serif;
+font-size:1.35rem; font-weight:700;
+color:var(–text); text-decoration:none;
+}
+.logo em { color:var(–red); font-style:normal; }
+.hback {
+display:none; align-items:center; gap:.4rem;
+background:none; border:1px solid var(–border);
+color:var(–muted); font-family:‘DM Sans’,sans-serif;
+font-size:.82rem; padding:.38rem .9rem;
+border-radius:40px; cursor:pointer; transition:var(–trans);
+}
+.hback:hover { border-color:var(–red); color:var(–red); }
+.hback.show { display:flex; }
+
+/* PAGES */
+.page { display:none; }
+.page.active { display:block; animation:fu .4s ease forwards; }
+@keyframes fu { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+
+/* HERO */
+.hero {
+text-align:center; padding:5rem 2rem 3.5rem;
+}
+.hero-line {
+width:38px; height:2px; background:var(–red);
+margin:0 auto 1.4rem;
+box-shadow:0 0 14px var(–red);
+}
+.hero h1 {
+font-family:‘Cormorant Garamond’,serif;
+font-size:clamp(2.6rem,6vw,4rem); font-weight:700; line-height:1.08;
+}
+.hero h1 em { color:var(–red); font-style:normal; }
+.hero p { color:var(–muted); font-size:.9rem; max-width:340px; margin:1rem auto 0; line-height:1.8; }
+.hero-div { width:100%; height:1px; background:linear-gradient(90deg,transparent,var(–border),transparent); margin-top:3.5rem; }
+
+/* CATEGORY GRID */
+.cat-grid {
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(265px,1fr));
+gap:1.2rem; padding:2.5rem 2rem 6rem;
+max-width:1160px; margin:0 auto;
+}
+.cat-card {
+background:var(–surface); border:1px solid var(–border);
+border-radius:var(–radius); overflow:hidden;
+cursor:pointer; transition:var(–trans); position:relative;
+}
+.cat-card:hover {
+transform:translateY(-5px);
+border-color:var(–red);
+box-shadow:0 16px 48px var(–red-glow);
+}
+.cat-card.nsfw::before {
+content:’’; position:absolute; top:0; left:0; right:0; height:3px;
+background:linear-gradient(90deg,var(–red),transparent);
+}
+.cat-thumb {
+width:100%; height:190px;
+display:flex; align-items:center; justify-content:center;
+font-size:3.8rem; background:var(–surface2); position:relative;
+overflow:hidden; transition:transform .5s ease;
+}
+.cat-card:hover .cat-thumb { transform:scale(1.04); }
+.cat-thumb::after {
+content:’’; position:absolute; inset:0;
+background:linear-gradient(160deg,transparent 40%,rgba(192,32,46,.07));
+}
+.cat-body {
+padding:1.1rem 1.3rem 1.3rem;
+display:flex; align-items:center; justify-content:space-between;
+border-top:1px solid var(–border);
+}
+.cat-name { font-family:‘Cormorant Garamond’,serif; font-size:1.15rem; font-weight:600; }
+.cat-cnt  { font-size:.76rem; color:var(–muted); margin-top:.18rem; }
+.cat-arr  {
+width:30px; height:30px; border-radius:50%;
+border:1px solid var(–border);
+display:flex; align-items:center; justify-content:center;
+color:var(–muted); transition:var(–trans); flex-shrink:0;
+}
+.cat-card:hover .cat-arr { background:var(–red); border-color:var(–red); color:#fff; box-shadow:0 0 14px var(–red-glow); }
+.nsfw-badge {
+position:absolute; top:10px; left:10px;
+background:var(–red); color:#fff;
+font-size:.62rem; font-weight:600; letter-spacing:.1em;
+padding:.22rem .65rem; border-radius:20px; text-transform:uppercase;
+box-shadow:0 0 12px rgba(192,32,46,.5);
+}
+
+/* GALLERY HEADER */
+.gal-head {
+padding:3rem 2rem 1.5rem; max-width:1160px; margin:0 auto;
+border-bottom:1px solid var(–border);
+}
+.gal-head h2 { font-family:‘Cormorant Garamond’,serif; font-size:2rem; font-weight:700; }
+.gal-head h2 em { color:var(–red); font-style:normal; }
+.gal-head .sub { color:var(–muted); font-size:.83rem; margin-top:.25rem; }
+
+.nsfw-bar { max-width:1160px; margin:.9rem auto 0; padding:0 2rem; display:none; }
+.nsfw-bar.show { display:block; }
+.nsfw-bar-inner {
+background:rgba(192,32,46,.08); border:1px solid rgba(192,32,46,.22);
+border-radius:8px; padding:.65rem 1rem;
+font-size:.8rem; color:#e88090;
+display:flex; align-items:center; gap:.5rem;
+}
+
+/* PINTEREST MASONRY */
+.pin-grid {
+column-count:4; column-gap:10px;
+padding:1.5rem 2rem 6rem;
+max-width:1160px; margin:0 auto;
+}
+@media(max-width:1100px){.pin-grid{column-count:3}}
+@media(max-width:660px) {.pin-grid{column-count:2}}
+@media(max-width:380px) {.pin-grid{column-count:1}}
+
+.pin {
+break-inside:avoid; margin-bottom:10px;
+border-radius:8px; overflow:hidden;
+cursor:pointer; position:relative;
+background:var(–surface2); transition:var(–trans); display:block;
+}
+.pin:hover { transform:scale(1.015); box-shadow:0 8px 28px rgba(0,0,0,.65); }
+.pin img { width:100%; display:block; border-radius:8px; transition:filter .4s ease; }
+
+.pin.nsfw-pin img { filter:blur(22px) brightness(.6) saturate(.5); }
+.pin.nsfw-pin.rev  img { filter:none; }
+
+.nsfw-veil {
+position:absolute; inset:0;
+display:flex; flex-direction:column;
+align-items:center; justify-content:center;
+gap:.35rem; color:rgba(255,255,255,.7);
+font-size:.74rem; pointer-events:none; transition:opacity .35s;
+}
+.pin.nsfw-pin.rev .nsfw-veil { opacity:0; }
+
+.pin-hover {
+position:absolute; inset:0;
+background:linear-gradient(to top,rgba(10,8,8,.7) 0%,transparent 55%);
+opacity:0; transition:opacity .28s;
+display:flex; align-items:flex-end; padding:.75rem;
+}
+.pin:hover .pin-hover { opacity:1; }
+.pin-zoom { color:#fff; opacity:.8; margin-left:auto; }
+
+/* LIGHTBOX */
+#lb {
+position:fixed; inset:0; z-index:1000;
+background:rgba(5,3,3,.97); backdrop-filter:blur(14px);
+display:flex; align-items:center; justify-content:center;
+opacity:0; pointer-events:none; transition:opacity .3s ease;
+}
+#lb.open { opacity:1; pointer-events:all; }
+
+.lb-wrap {
+position:relative; display:flex; flex-direction:column;
+align-items:center; gap:.9rem; max-width:92vw;
+}
+#lb-box {
+overflow:auto; max-width:88vw; max-height:82vh;
+border-radius:10px; cursor:zoom-in;
+border:1px solid var(–border);
+}
+#lb-box.zoomed { cursor:zoom-out; }
+#lb-img {
+display:block; max-width:100%; max-height:82vh;
+border-radius:10px; transition:filter .4s ease,transform .35s ease;
+user-select:none; transform-origin:center;
+}
+#lb-box.zoomed #lb-img { transform:scale(2.3); max-width:none; max-height:none; }
+
+#lb.nsfw-lb #lb-img { filter:blur(24px) brightness(.55); }
+#lb.nsfw-lb.rev #lb-img { filter:none; }
+
+.lb-bar { display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; justify-content:center; }
+.lb-btn {
+background:var(–surface2); border:1px solid var(–border);
+color:var(–text); height:38px; border-radius:40px;
+padding:0 1rem; display:flex; align-items:center; gap:.4rem;
+cursor:pointer; font-family:‘DM Sans’,sans-serif;
+font-size:.8rem; transition:var(–trans);
+}
+.lb-btn:hover { border-color:var(–red); color:var(–red); }
+.lb-btn.ic { width:38px; padding:0; justify-content:center; border-radius:50%; }
+.lb-reveal {
+background:rgba(192,32,46,.1); border:1px solid var(–red);
+color:#e88090; display:none;
+}
+.lb-reveal:hover { background:var(–red); color:#fff; }
+#lb.nsfw-lb .lb-reveal { display:flex; }
+#lb.nsfw-lb.rev .lb-reveal { display:none; }
+
+.lb-close {
+position:absolute; top:-46px; right:0;
+background:var(–surface2); border:1px solid var(–border);
+color:var(–muted); width:34px; height:34px;
+border-radius:50%; display:flex; align-items:center; justify-content:center;
+cursor:pointer; font-size:1rem; transition:var(–trans);
+}
+.lb-close:hover { color:#fff; border-color:#fff; }
+.lb-nav {
+position:absolute; top:50%; transform:translateY(-50%);
+background:rgba(0,0,0,.55); border:1px solid var(–border);
+color:var(–text); width:40px; height:40px; border-radius:50%;
+display:flex; align-items:center; justify-content:center;
+cursor:pointer; transition:var(–trans); z-index:5;
+}
+.lb-nav:hover { background:var(–red); border-color:var(–red); }
+.lb-prev { left:-52px; } .lb-next { right:-52px; }
+@media(max-width:700px){ .lb-prev{left:6px} .lb-next{right:6px} }
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(–bg)}
+::-webkit-scrollbar-thumb{background:var(–border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(–red)}
+</style>
+
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#" onclick="goHome()">Felix<em>_kid</em></a>
+  <button class="hback" id="hback" onclick="goHome()">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13L5 8l5-5"/></svg>
+    กลับ
+  </button>
+</header>
+
+<!-- HOME -->
+
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-line"></div>
+    <h1>Portfolio <em>Gallery</em></h1>
+    <p>เลือกหมวดหมู่เพื่อดูผลงาน<br>คลิกภาพเพื่อดูแบบเต็ม</p>
+    <div class="hero-div"></div>
+  </div>
+  <div class="cat-grid" id="catGrid"></div>
+</div>
+
+<!-- GALLERY -->
+
+<div class="page" id="page-gallery">
+  <div class="gal-head">
+    <h2 id="galTitle"></h2>
+    <div class="sub" id="galSub"></div>
+  </div>
+  <div class="nsfw-bar" id="nsfwBar">
+    <div class="nsfw-bar-inner">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+      </svg>
+      เนื้อหาสำหรับผู้ใหญ่ 18+ &nbsp;·&nbsp; <strong>กดที่ภาพ</strong>เพื่อปลดเบลอ กดอีกครั้งเพื่อดูแบบเต็ม
+    </div>
+  </div>
+  <div class="pin-grid" id="pinGrid"></div>
+</div>
+
+<!-- LIGHTBOX -->
+
+<div id="lb">
+  <div class="lb-wrap">
+    <button class="lb-close" onclick="closeLB()">✕</button>
+    <div id="lb-box" onclick="toggleZoom()">
+      <img id="lb-img" src="" alt="">
+    </div>
+    <div class="lb-bar">
+      <button class="lb-btn" onclick="closeLB()">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13L5 8l5-5"/></svg>
+        กลับแกลเลอรี
+      </button>
+      <button class="lb-btn ic" onclick="toggleZoom()" title="ซูม / Zoom">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+        </svg>
+      </button>
+      <button class="lb-btn lb-reveal" onclick="lbReveal()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+        </svg>
+        ปลดเบลอ
+      </button>
+    </div>
+    <button class="lb-nav lb-prev" onclick="navLB(-1)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13L5 8l5-5"/></svg>
+    </button>
+    <button class="lb-nav lb-next" onclick="navLB(1)">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 3l5 5-5 5"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+const DATA = [
+  {
+    id:'cover', name:'ปกเดี่ยว', emoji:'📕', nsfw:false,
+    imgs:[
+      'https://i.ibb.co/k2MDphLr/file-0000000054fc71faa1ffb686f19e4cb0.png',
+      'https://i.ibb.co/mFdkypsg/file-00000000e98c71fa862985fbef8ae7be.png',
+      'https://picsum.photos/seed/cov3/460/640',
+      'https://picsum.photos/seed/cov4/490/700',
+      'https://picsum.photos/seed/cov5/470/660',
+      'https://picsum.photos/seed/cov6/500/740',
+      'https://picsum.photos/seed/cov7/480/650',
+      'https://picsum.photos/seed/cov8/460/690',
+      'https://picsum.photos/seed/cov9/500/680',
+    ]
+  },
+  {
+    id:'illust', name:'ภาพประกอบ', emoji:'🎨', nsfw:false,
+    imgs:[
+      'https://picsum.photos/seed/il1/900/580',
+      'https://picsum.photos/seed/il2/700/700',
+      'https://picsum.photos/seed/il3/850/560',
+      'https://picsum.photos/seed/il4/600/800',
+      'https://picsum.photos/seed/il5/950/640',
+      'https://picsum.photos/seed/il6/700/900',
+      'https://picsum.photos/seed/il7/800/540',
+      'https://picsum.photos/seed/il8/750/600',
+    ]
+  },
+  {
+    id:'charsheet', name:'Character Sheet', emoji:'🧑‍🎨', nsfw:false,
+    imgs:[
+      'https://picsum.photos/seed/cs1/600/900',
+      'https://picsum.photos/seed/cs2/580/880',
+      'https://picsum.photos/seed/cs3/620/920',
+      'https://picsum.photos/seed/cs4/590/860',
+      'https://picsum.photos/seed/cs5/600/900',
+      'https://picsum.photos/seed/cs6/580/880',
+      'https://picsum.photos/seed/cs7/610/900',
+    ]
+  },
+  {
+    id:'nsfw', name:'NSFW', emoji:'🔞', nsfw:true,
+    imgs:[
+      'https://picsum.photos/seed/nf1/500/700',
+      'https://picsum.photos/seed/nf2/480/680',
+      'https://picsum.photos/seed/nf3/520/740',
+      'https://picsum.photos/seed/nf4/500/720',
+      'https://picsum.photos/seed/nf5/480/700',
+      'https://picsum.photos/seed/nf6/510/680',
+    ]
+  }
+];
+
+let curCat=null, curIdx=0, zoomed=false;
+const revealed=new Set();
+
+function renderHome(){
+  document.getElementById('catGrid').innerHTML=DATA.map(c=>`
+    <div class="cat-card${c.nsfw?' nsfw':''}" onclick="openCat('${c.id}')">
+      ${c.nsfw?'<div class="nsfw-badge">18+</div>':''}
+      <div class="cat-thumb">${c.emoji}</div>
+      <div class="cat-body">
+        <div>
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-cnt">${c.imgs.length} ผลงาน</div>
+        </div>
+        <div class="cat-arr">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 3l5 5-5 5"/></svg>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function openCat(id){
+  curCat=DATA.find(c=>c.id===id);
+  revealed.clear();
+  document.getElementById('galTitle').innerHTML=curCat.nsfw
+    ?'<em>🔞</em> NSFW':curCat.name;
+  document.getElementById('galSub').textContent=curCat.imgs.length+' ผลงาน';
+  const nb=document.getElementById('nsfwBar');
+  curCat.nsfw?nb.classList.add('show'):nb.classList.remove('show');
+
+  document.getElementById('pinGrid').innerHTML=curCat.imgs.map((src,i)=>`
+    <div class="pin${curCat.nsfw?' nsfw-pin':''}" id="p${i}"
+      onclick="${curCat.nsfw?`nsfwClick(${i})`:`openLB(${i})`}">
+      <img src="${src}" alt="" loading="lazy">
+      ${curCat.nsfw?`
+        <div class="nsfw-veil">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24M1 1l22 22"/>
+          </svg>
+          กดเพื่อปลดเบลอ
+        </div>`:`
+        <div class="pin-hover">
+          <div class="pin-zoom">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+          </div>
+        </div>`}
+    </div>`).join('');
+
+  showPage('gallery');
+  document.getElementById('hback').classList.add('show');
+}
+
+function nsfwClick(i){
+  const el=document.getElementById('p'+i);
+  if(!el.classList.contains('rev')){el.classList.add('rev');revealed.add(i);}
+  else openLB(i);
+}
+
+function showPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goHome(){
+  showPage('home');
+  document.getElementById('hback').classList.remove('show');
+  curCat=null;
+}
+
+function openLB(i){
+  curIdx=i; zoomed=false;
+  const lb=document.getElementById('lb');
+  document.getElementById('lb-img').src=curCat.imgs[i];
+  document.getElementById('lb-box').classList.remove('zoomed');
+  lb.classList.remove('rev');
+  lb.classList.toggle('nsfw-lb',curCat.nsfw);
+  if(curCat.nsfw&&revealed.has(i))lb.classList.add('rev');
+  lb.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLB(){
+  document.getElementById('lb').classList.remove('open','nsfw-lb','rev');
+  document.getElementById('lb-box').classList.remove('zoomed');
+  document.body.style.overflow='';
+  zoomed=false;
+}
+function toggleZoom(){
+  zoomed=!zoomed;
+  document.getElementById('lb-box').classList.toggle('zoomed',zoomed);
+}
+function lbReveal(){
+  document.getElementById('lb').classList.add('rev');
+  revealed.add(curIdx);
+  const el=document.getElementById('p'+curIdx);
+  if(el)el.classList.add('rev');
+}
+function navLB(d){
+  openLB((curIdx+d+curCat.imgs.length)%curCat.imgs.length);
+}
+
+document.addEventListener('keydown',e=>{
+  const lb=document.getElementById('lb');
+  if(!lb.classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowRight')navLB(1);
+  if(e.key==='ArrowLeft')navLB(-1);
+  if(e.key.toLowerCase()==='z')toggleZoom();
+});
+document.getElementById('lb').addEventListener('click',e=>{
+  if(e.target===document.getElementById('lb'))closeLB();
+});
+
+renderHome();
+</script>
+
+</body>
+</html>
